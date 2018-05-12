@@ -1,0 +1,24 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Me",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "ffmpeg-binaries": "^3.2.2-3",
+    "fs": "0.0.1-security",
+    "get-youtube-id": "^1.0.0",
+    "node-fetch": "^2.1.2",
+    "node-gyp": "^3.6.2",
+    "opusscript": "0.0.6",
+    "request": "^2.85.0",
+    "simple-youtube-api": "^5.0.2",
+    "youtube-info": "^1.2.0",
+    "ytdl-core": "^0.20.2"
+  }
+}
