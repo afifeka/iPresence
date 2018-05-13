@@ -193,6 +193,10 @@ function play(guild, song) {
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
 	serverQueue.textChannel.send(`:arrow_forward: Memulai music: **${song.title}**`);
+	
+	let embed = new Discord.RichEmbed()
+	.setDescreption(`:arrow_forward: | Memulai Music: **${song.title}**`);
+	message.channel.send(embed);
 
 }
 
