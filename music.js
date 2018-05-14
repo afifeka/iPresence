@@ -127,6 +127,10 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 	}
 
 	return undefined;
+	
+	if(command === "help"){
+	message.channel.send("**Chicken Help** \n `play (url/name/playlist)` - Playing a music \n `skip` - Skipping music \n `stop` - Stop music \n `pause` - Pause the music \n `resume` - Resume the music \n `volume (1 -> 5)` - Set volume audio \n `queue` - See queue list \n `np` - Now playing? \n `Musical Release!`")
+        }
 });
 
 async function handleVideo(video, msg, voiceChannel, playlist = false) {
