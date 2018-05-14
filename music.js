@@ -1,5 +1,5 @@
 const { Client, Util } = require('discord.js');
-const { TOKEN, PREFIX, GOOGLE_API_KEY } = require('./settings');
+const { TOKEN, PREFIX, GOOGLE_API_KEY } = require('./settings.json');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 
@@ -33,14 +33,13 @@ client.on('message', async msg => { // eslint-disable-line
 
 	if (command === 'play') {
 		const voiceChannel = msg.member.voiceChannel;
-		if (!voiceChannel) return msg.channel.send(":x: Harap, masuk voice channel!")
-        
+		if (!voiceChannel) return msg.channel.send('I\'m sorry but you need to be in a voice channel to play music!');
 		const permissions = voiceChannel.permissionsFor(msg.client.user);
 		if (!permissions.has('CONNECT')) {
-			return msg.channel.send(':x: Saya tidak ada permission untuk **CONNECT** ke voice channel tersebut!');
+			return msg.channel.send('I cannot connect to your voice channel, make sure I have the proper permissions!');
 		}
 		if (!permissions.has('SPEAK')) {
-			return msg.channel.send(':x: Saya tidak ada permission untuk **SPEAK** untuk voice channel tersebut!');
+			return msg.channel.send('I cannot speak in this voice channel, make sure I have the proper permissions!');
 		}
 
 		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
@@ -50,7 +49,7 @@ client.on('message', async msg => { // eslint-disable-line
 				const video2 = await youtube.getVideoByID(video.id); // eslint-disable-line no-await-in-loop
 				await handleVideo(video2, msg, voiceChannel, true); // eslint-disable-line no-await-in-loop
 			}
-			return msg.channel.send(`:white_check_mark: Playlist **${playlist.title}** Telah ditambahkan dalam queue!`);
+			return msg.channel.send(`✅ Playlist: **${playlist.title}** has been added to the queue!`);
 		} else {
 			try {
 				var video = await youtube.getVideo(url);
@@ -59,11 +58,9 @@ client.on('message', async msg => { // eslint-disable-line
 					var videos = await youtube.searchVideos(searchString, 10);
 					let index = 0;
 					msg.channel.send(`
-__**Lagu Pilihan:**__
-|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|
-${videos.map(video2 => `${++index}. **${video2.title}**`).join('\n')}
-|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-|
-**Pilih salah satu lagu diatas**
+__**Song selection:**__
+${videos.map(video2 => `**${++index} -** ${video2.title}`).join('\n')}
+Please provide a value to select one of the search results ranging from 1-10.
 					`);
 					// eslint-disable-next-line max-depth
 					try {
@@ -74,59 +71,59 @@ ${videos.map(video2 => `${++index}. **${video2.title}**`).join('\n')}
 						});
 					} catch (err) {
 						console.error(err);
-						return msg.channel.send('Membatalkan pemilihan music.');
+						return msg.channel.send('No or invalid value entered, cancelling video selection.');
 					}
 					const videoIndex = parseInt(response.first().content);
 					var video = await youtube.getVideoByID(videos[videoIndex - 1].id);
 				} catch (err) {
 					console.error(err);
-					return msg.channel.send('Tidak ada hasil apapun yang anda cari.');
+					return msg.channel.send('🆘 I could not obtain any search results.');
 				}
 			}
 			return handleVideo(video, msg, voiceChannel);
 		}
 	} else if (command === 'skip') {
-		if (!msg.member.voiceChannel) return msg.channel.send(':x: Anda tidak berada di voice channel!');
-		if (!serverQueue) return msg.channel.send(':x: Tidak ada permainan yang bisa saya lewati/skip untuk Anda.');
-		serverQueue.connection.dispatcher.end('Skip command sedang dipakai!');
+		if (!msg.member.voiceChannel) return msg.channel.send('You are not in a voice channel!');
+		if (!serverQueue) return msg.channel.send('There is nothing playing that I could skip for you.');
+		serverQueue.connection.dispatcher.end('Skip command has been used!');
 		return undefined;
 	} else if (command === 'stop') {
-		if (!msg.member.voiceChannel) return msg.channel.send(':x: Anda tidak berada di voice channel!');
-		if (!serverQueue) return msg.channel.send(':x: Tidak ada permainan yang bisa saya hentikan/stop untuk Anda.');
+		if (!msg.member.voiceChannel) return msg.channel.send('You are not in a voice channel!');
+		if (!serverQueue) return msg.channel.send('There is nothing playing that I could stop for you.');
 		serverQueue.songs = [];
-		serverQueue.connection.dispatcher.end('Stop command sedang dipakai!');
+		serverQueue.connection.dispatcher.end('Stop command has been used!');
 		return undefined;
 	} else if (command === 'volume') {
-		if (!msg.member.voiceChannel) return msg.channel.send(':x: Anda tidak berada di voice channel!');
-		if (!serverQueue) return msg.channel.send(':x: Tidak ada yang memainkan lagu.');
-		if (!args[1]) return msg.channel.send(`:sound: Volume dichannel ini: **${serverQueue.volume}**`);
+		if (!msg.member.voiceChannel) return msg.channel.send('You are not in a voice channel!');
+		if (!serverQueue) return msg.channel.send('There is nothing playing.');
+		if (!args[1]) return msg.channel.send(`The current volume is: **${serverQueue.volume}**`);
 		serverQueue.volume = args[1];
 		serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
-		return msg.channel.send(`:loud_sound: Saya set volume ke: **${args[1]}**`);
+		return msg.channel.send(`I set the volume to: **${args[1]}**`);
 	} else if (command === 'np') {
-		if (!serverQueue) return msg.channel.send(':x: Tidak ada yang memainkan lagu.');
-		return msg.channel.send(`Sekarang mendengarkan/playing: **${serverQueue.songs[0].title}**`);
+		if (!serverQueue) return msg.channel.send('There is nothing playing.');
+		return msg.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
 	} else if (command === 'queue') {
-		if (!serverQueue) return msg.channel.send(':x: Tidak ada yang memainkan lagu.');
+		if (!serverQueue) return msg.channel.send('There is nothing playing.');
 		return msg.channel.send(`
-__**Lagu queue**__
+__**Song queue:**__
 ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
-**Sekarang mendengarkan/playing:** ${serverQueue.songs[0].title}
+**Now playing:** ${serverQueue.songs[0].title}
 		`);
 	} else if (command === 'pause') {
 		if (serverQueue && serverQueue.playing) {
 			serverQueue.playing = false;
 			serverQueue.connection.dispatcher.pause();
-			return msg.channel.send(':pause_button:  Lagu sedang dihentikan!');
+			return msg.channel.send('⏸ Paused the music for you!');
 		}
-		return msg.channel.send(':x: Tidak ada yang memainkan lagu.');
+		return msg.channel.send('There is nothing playing.');
 	} else if (command === 'resume') {
 		if (serverQueue && !serverQueue.playing) {
 			serverQueue.playing = true;
 			serverQueue.connection.dispatcher.resume();
-			return msg.channel.send(':arrow_forward: Meneruskan music!');
+			return msg.channel.send('▶ Resumed the music for you!');
 		}
-		return msg.channel.send(':X: Tidak ada yang memainkan lagu.');
+		return msg.channel.send('There is nothing playing.');
 	}
 
 	return undefined;
@@ -160,13 +157,13 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		} catch (error) {
 			console.error(`I could not join the voice channel: ${error}`);
 			queue.delete(msg.guild.id);
-			return msg.channel.send(`Error: ${error}`);
+			return msg.channel.send(`I could not join the voice channel: ${error}`);
 		}
 	} else {
 		serverQueue.songs.push(song);
 		console.log(serverQueue.songs);
 		if (playlist) return undefined;
-		else return msg.channel.send(`:record_button: **${song.title}** Sudah ditambahkan dalam queue!`);
+		else return msg.channel.send(`✅ **${song.title}** has been added to the queue!`);
 	}
 	return undefined;
 }
@@ -191,12 +188,7 @@ function play(guild, song) {
 		.on('error', error => console.error(error));
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
-	serverQueue.textChannel.send(`:arrow_forward: Memulai music: **${song.title}**`);
-	
-	let embed = new Discord.RichEmbed()
-	.setDescreption(`:arrow_forward: | Memulai Music: **${song.title}**`);
-	message.channel.send(embed);
-
+	serverQueue.textChannel.send(`🎶 Start playing: **${song.title}**`);
 }
 
 client.login(TOKEN);
