@@ -19,10 +19,6 @@ client.on('disconnect', () => console.log('I just disconnected, making sure you 
 
 client.on('reconnecting', () => console.log('I am reconnecting now!'));
 
-client.on("ready", async () => {
-	client.user.setActivity("Musical | $help", {type: "Listening"});
-});
-
 client.on('message', async msg => { // eslint-disable-line
 	if (msg.author.bot) return undefined;
 	if (!msg.content.startsWith(PREFIX)) return undefined;
@@ -129,10 +125,6 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 		}
 		return msg.channel.send('There is nothing playing.');
 	}
-	
-	if(command === "help"){
-	return msg.channel.send("**Chicken Help** \n `play (url/name/playlist)` - Playing a music \n `skip` - Skipping music \n `stop` - Stop music \n `pause` - Pause the music \n `resume` - Resume the music \n `volume (1 -> 5)` - Set volume audio \n `queue` - See queue list \n `np` - Now playing? \n `Musical Release!`")
-        }
 	
 	if(command === "invite"){
 	return msg.channel.send("https://discordapp.com/oauth2/authorize?client_id=445490225850875914&permissions=36849664&scope=bot | Invite to your discord server!")
