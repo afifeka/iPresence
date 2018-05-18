@@ -41,7 +41,10 @@ client.on('message', async msg => { // eslint-disable-line
 		}
 		const permissions = voiceChannel.permissionsFor(msg.client.user);
 		if (!permissions.has('CONNECT')) {
-			return msg.channel.send('I cannot connect to your voice channel, make sure I have the proper permissions!');
+			let connect = new RichEmbed()
+                        .setDescription(":x: | I don't have permission to connect this voice channel! ")
+                        .setColor("RED")
+                        return msg.channel.send(connect)
 		}
 		if (!permissions.has('SPEAK')) {
 			return msg.channel.send('I cannot speak in this voice channel, make sure I have the proper permissions!');
