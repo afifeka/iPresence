@@ -1,4 +1,4 @@
-const { Client, Util } = require('discord.js');
+const { Client, Util, RichEmbed } = require('discord.js');
 const { TOKEN, PREFIX, GOOGLE_API_KEY } = require('./settings.json');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
@@ -33,7 +33,12 @@ client.on('message', async msg => { // eslint-disable-line
 
 	if (command === 'play') {
 		const voiceChannel = msg.member.voiceChannel;
-		if (!voiceChannel) return msg.channel.send('I\'m sorry but you need to be in a voice channel to play music!');
+		if (!voiceChannel)  {
+			let voicechannel = new RichEmbed()
+			.setDescription(":x: | Plase join a voice channel!")
+			.setColor("RED")
+			return msg.channel.send(voicechannel)
+		}
 		const permissions = voiceChannel.permissionsFor(msg.client.user);
 		if (!permissions.has('CONNECT')) {
 			return msg.channel.send('I cannot connect to your voice channel, make sure I have the proper permissions!');
