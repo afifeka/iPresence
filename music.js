@@ -47,7 +47,10 @@ client.on('message', async msg => { // eslint-disable-line
                         return msg.channel.send(connect)
 		}
 		if (!permissions.has('SPEAK')) {
-			return msg.channel.send('I cannot speak in this voice channel, make sure I have the proper permissions!');
+			let speak = new RichEmbed()
+.setDescription(":x: | I don't have permission to speak this voice channel! ")
+.setColor("RED")
+msg.channel.send(speak)
 		}
 
 		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
