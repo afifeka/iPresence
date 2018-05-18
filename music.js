@@ -50,7 +50,7 @@ client.on('message', async msg => { // eslint-disable-line
 			let speak = new RichEmbed()
 .setDescription(":x: | I don't have permission to speak this voice channel! ")
 .setColor("RED")
-msg.channel.send(speak)
+return msg.channel.send(speak)
 		}
 
 		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
@@ -60,7 +60,10 @@ msg.channel.send(speak)
 				const video2 = await youtube.getVideoByID(video.id); // eslint-disable-line no-await-in-loop
 				await handleVideo(video2, msg, voiceChannel, true); // eslint-disable-line no-await-in-loop
 			}
-			return msg.channel.send(`✅ Playlist: **${playlist.title}** has been added to the queue!`);
+			let addplaylist = new RichEmbed()
+.setDescription(`✅ | Add playlist **${playlist.title}** to queue!`)
+.setColor("GREEN");
+return msg.channel.send(addplaylist);
 		} else {
 			try {
 				var video = await youtube.getVideo(url);
@@ -68,11 +71,14 @@ msg.channel.send(speak)
 				try {
 					var videos = await youtube.searchVideos(searchString, 10);
 					let index = 0;
-					msg.channel.send(`
+					let plih = new RichEmbed()
+.setColor("RANDOM")
+.setDescription(`
 __**Song selection:**__
 ${videos.map(video2 => `**${++index} -** ${video2.title}`).join('\n')}
 Please provide a value to select one of the search results ranging from 1-10.
 					`);
+					return msg.channel.send(plih)
 					// eslint-disable-next-line max-depth
 					try {
 						var response = await msg.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 11, {
