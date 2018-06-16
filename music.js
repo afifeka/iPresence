@@ -191,7 +191,7 @@ function play(guild, song) {
 	let play = new RichEmbed()
         .setDescription(`🎶 Start playing: **${song.title}**`)	
         .setColor("RANDOM")
-        return msg.channel.send(play)
+        serverQueue.textChannel.send(play);
 }
 
 client.login(process.env.TOKEN);
