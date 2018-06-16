@@ -163,7 +163,12 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		serverQueue.songs.push(song);
 		console.log(serverQueue.songs);
 		if (playlist) return undefined;
-		else return msg.channel.send(`✅ **${song.title}** has been added to the queue!`);
+		else {
+	let songadd = new RichEmbed()
+	.setDescription(`✅ **${song.title}** has ben added to the queue!`)
+	.setColor("RANDOM")
+	msg.channel.send(songadd)
+}
 	}
 	return undefined;
 }
