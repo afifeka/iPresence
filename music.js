@@ -1,4 +1,4 @@
-const { Client, Util } = require('discord.js');
+const { Client, Util, RichEmbed } = require('discord.js');
 const { PREFIX, GOOGLE_API_KEY } = require('./settings');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
@@ -188,7 +188,10 @@ function play(guild, song) {
 		.on('error', error => console.error(error));
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
-	serverQueue.textChannel.send(`🎶 Start playing: **${song.title}**`);
+	let play = new RichEmbed()
+        .setDescription(`🎶 Start playing: **${song.title}**`)	
+        .setColor("RANDOM")
+        return msg.channel.send(play)
 }
 
 client.login(process.env.TOKEN);
