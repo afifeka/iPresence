@@ -91,7 +91,7 @@ Please provide a value to select one of the search results ranging from 1-10.
 		if (!msg.member.voiceChannel) return msg.channel.send('You are not in a voice channel!');
 		if (!serverQueue) return msg.channel.send('There is nothing playing that I could stop for you.');
 		const stop = new RichEmbed()
-                .setDescription(`:stop_button: Stopping: ${song.title}`)
+                .setDescription(`:stop_button: Stopping: ${serverQueue.songs}`)
                 .setColor("GREEN")
                 return msg.channel.send(stop)
 		serverQueue.songs = [];
