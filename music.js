@@ -167,7 +167,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 	let songadd = new RichEmbed()
 	.setDescription(`✅ **${song.title}** has ben added to the queue!`)
 	.setColor("RANDOM")
-	msg.channel.send(songadd)
+	return msg.channel.send(songadd)
 }
 	}
 	return undefined;
